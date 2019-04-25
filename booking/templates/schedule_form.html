@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+{% block content %}
+{{block.super}}<br><br><br><br><br>
+<div class="container-fluid" style="font-size: 20px">
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <h2 class="search text-center">Submit the schedule</h2>
+      <hr>
+      <form class="" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+
+        <div class="form-group">
+        <input type="submit" class="btn mx-auto" value="Submit Project">
+      </div>
+      </form>
+    </div>
+    <div class="col-md-4"></div>
+  </div>
+</div>
+{% endblock %}

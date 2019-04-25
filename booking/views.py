@@ -3,12 +3,14 @@ from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
 from .models import BusOrganisation, Route, Bus, Schedule, Ticket
 from datetime import datetime, date
-from .forms import TicketForm
+from django.contrib.auth.decorators import login_required
+
+from .forms import TicketForm, ScheduleForm
 import uuid
 # import phonenumbers
 # from AfricasTalkingGateway import AfricasTalkingGateway, AfricasTalkingGatewayException
 # from africastalking.AfricasTalkingGateway import (AfricasTalkingGateway, AfricasTalkingGatewayException)
-from decouple import config
+# from decouple import config
 # from django.utils import urlencode
 
 def home(request):
@@ -82,7 +84,7 @@ def bus_details(request, bus_schedule_id):
 
         selected_bus = Schedule.get_single_schedule(bus_schedule_id)
 
-        title = f'{selected_bus.bus.bus_organisation} Schedule Details'
+        # title = f'{selected_bus.bus.bus_organisation} 
 
         estimation_duration = Schedule.get_travel_estimation(bus_schedule_id)
 
@@ -116,81 +118,27 @@ def bus_details(request, bus_schedule_id):
 
          return redirect(Http404)
 
-def mobile_payment(request, ticket_id):
-    '''
-    Function that carries out the payment process 
-    '''
-    # Get ticket with a given id 
-    ticket = Ticket.get_single_ticket(ticket_id)
 
-    # Get the route and convert to string
-    bus_route = str((ticket.schedule.bus.bus_organisation.name))
-    print(type(bus_route))
+# @login_required(login_url='/accounts/login/')
+def submit_schedule(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form =ScheduleForm(request.POST)
 
-    # Get the phone number
-    phone_number = ticket.phone_number
-    print(type(phone_number))
+        if form.is_valid():
+            schedule = form.save(commit=False)
+            schedule.user = current_user
+            schedule.save()
+            return redirect(reverse('schedule'))
+    else:
+        form = ScheduleForm()
 
-    # Get the ticket price and convert Decimal to int
-    ticket_price = float(ticket.schedule.price)
-    print(type(ticket_price))
-    
-    # Africas Talking Set Up
-    # Specify your credentials
-    # username = "Bus-board"
-    username = "sandbox"
-    apiKey = config('API_KEY_AFRICAS_TALKING')
+    return render(request,'schedule_form.html',{'form':form})
 
-    # Create an instance of our awesome gateway class and pass your credentials
-    gateway = AfricasTalkingGateway(username, apiKey, "sandbox")
+def schedule(request):
+    schedules = Schedule.objects.all()
+    return render(request,'schedule.html',{'schedules':schedules})
 
-    #*************************************************************************************
-    #  NOTE: If connecting to the sandbox:
-    #
-    #  1. Use "sandbox" as the username
-    #  2. Use the apiKey generated from your sandbox application
-    #     https://account.africastalking.com/apps/sandbox/settings/key
-    #  3. Add the "sandbox" flag to the constructor
-    #
-    #  gateway = AfricasTalkingGateway(username, apiKey, "sandbox");
-    #**************************************************************************************
-
-    # Specify the name of your Africa's Talking payment product
-    productName  = bus_route
-
-    # The phone number of the customer checking out
-    phoneNumber  = phone_number
-
-    # The 3-Letter ISO currency code for the checkout amount
-    currencyCode = "KES"
-
-    # The checkout amount
-    amount = ticket_price 
-    print(amount)
-
-    # Any metadata that you would like to send along with this request
-    # This metadata will be  included when we send back the final payment notification
-    metadata  = {"agentId"   : "654",
-                "productId" : "321"}
-    try:
-    # Initiate the checkout. If successful, you will get back a transactionId
-        transaction_id = gateway.initiateMobilePaymentCheckout(productName,
-                              phoneNumber,
-                              currencyCode,
-                              amount,
-                              metadata) 
-        print ("The transactionId is " + transaction_id)
-        
-        ticket.transaction_code = transaction_id
-        ticket.save()
-
-        print(ticket.transaction_code)
-        return redirect('/ticket/' + str(ticket_id))
-        
-
-    
-    except AfricasTalkingGatewayException as e:
-        print ("Received error response: %s" % str(e))
 
 
 
