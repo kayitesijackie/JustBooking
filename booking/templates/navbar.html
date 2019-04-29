@@ -9,12 +9,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-        <nav class="navbar fixed-top navbar-toggleable-sm navbar-inverse">
+    <nav class="navbar navbar-expand-xl navbar-inverse fixed-top" >
             <div class="container navbar-container">
                 <div class="navbar-brand">
-                    <a href="{% url 'home' %}"><img src="{% static 'img/bus_logo1.png' %}" alt="Bus Board Logo" class="logo"></a>
+                    <a href="{% url 'home' %}">JustBooking</a>
+                    <ul style="margin-right:50px;" class="navbar-nav ml-auto">
+       
+
+                     
+                        {% if user.is_authenticated %}
+                        <ul>
+                          <li class="dropdown">
+                            <a href="#" class="dropdown-toggle btn btn-default" data-toggle="dropdown" role="button" aria-expanded="false">Schedule
+                                      <span class="caret"></span>
+                                  </a>
+                            <ul class="dropdown-menu" role="menu">
+                        <li class="nav-item">
+                          <img src="{{company_logo.url}}" alt="company logo" style=" border-radius:50%; height: 40px; width: 40px">
+                        </li>
+                        
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'submit_schedule' %}" style="color:rgb(17, 16, 16);"><strong>New schedule</strong></a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="/logout" style="color:rgb(17, 16, 16);"><strong>Logout</strong></a>
+                        </li>
+                        </ul>
+                        {% else %}
+                        <li>
+                          <a class="nav-link" href="/accounts/login/" style="color:white;">Login</a>
+                        </li>
+                        
+                        {% endif %}
+                
+                     
+                      
                 </div>
             </div>
         </nav>
 </body>
 </html>
+
+  
+  

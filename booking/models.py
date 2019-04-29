@@ -117,15 +117,18 @@ class Bus(models.Model):
         return route_buses
 
 class Schedule(models.Model):
+    departure_location = models.CharField(max_length=255, null= True)
+
+    destination_location = models.CharField(max_length=255, null= True)
     
     departure_time = models.DateTimeField(auto_now_add=False)
 
-    bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
+    name= models.ForeignKey(BusOrganisation, on_delete=models.CASCADE, null= True)
 
     price = models.DecimalField(max_digits=15 ,decimal_places=2, default=Decimal(0.00))
 
-    def __str__(self):
-        return self.bus.bus_organisation.name + ' Bus No.' + str(self.bus.id) + ' Schedule No.' + str(self.id)
+    # def __str__(self):
+    #     return self.bus.bus_organisation.name + ' Bus No.' + str(self.bus.id) + ' Schedule No.' + str(self.id)
 
     class Meta:
        

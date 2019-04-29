@@ -119,7 +119,7 @@ def bus_details(request, bus_schedule_id):
          return redirect(Http404)
 
 
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 def submit_schedule(request):
     current_user = request.user
     if request.method == 'POST':
