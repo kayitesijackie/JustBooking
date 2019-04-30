@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'',include('booking.urls')),
     url(r'^logout/$', views.logout, {"next_page": '/'}), 
-    # url(r'^ratings/', include('star_ratings.urls', namespace='ratings', app_name='ratings')),
     # url(r'^ticket/(?P<ticket_id>(\d+))$', generate_view ),
 ]
 

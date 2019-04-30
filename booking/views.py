@@ -19,6 +19,14 @@ def home(request):
     '''
     return render(request, 'home.html')
 
+def schedules(request):
+    '''
+    view function for schedules page
+    '''
+    schedules = Schedule.objects.all()
+    return render(request,'schedule.html',{'schedules':schedules})
+
+
 def search_results(request):
     '''
     View function to get the the requested departure and arrival locations from the database and display to the user
@@ -122,6 +130,7 @@ def bus_details(request, bus_schedule_id):
 @login_required(login_url='/accounts/login/')
 def submit_schedule(request):
     current_user = request.user
+    schedules = Schedule.objects.all()
     if request.method == 'POST':
         form =ScheduleForm(request.POST)
 
@@ -129,7 +138,7 @@ def submit_schedule(request):
             schedule = form.save(commit=False)
             schedule.user = current_user
             schedule.save()
-            return redirect(reverse('schedule'))
+            return render(request, 'schedule.html', {'schedules':schedules})
     else:
         form = ScheduleForm()
 

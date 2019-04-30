@@ -5,6 +5,7 @@ from .import views
 
 urlpatterns = [
   url('^$', views.home, name = 'home'),
+  url(r'^schedules', views.schedules, name = 'schedules'),
   url(r'^search/',views.search_results, name = 'search_results'),
   url(r'^new_schedule/',views.submit_schedule, name='submit_schedule'),
   url(r'^schedule/(\d+)',views.schedule,name='schedule'),

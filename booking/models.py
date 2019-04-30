@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime, date, time, timedelta
 from django.utils import timezone
+import datetime as dt
 import uuid
 from decimal import Decimal
 
@@ -121,7 +122,9 @@ class Schedule(models.Model):
 
     destination_location = models.CharField(max_length=255, null= True)
     
-    departure_time = models.DateTimeField(auto_now_add=False)
+    departure_time = models.TimeField(default=dt.time(00, 00))
+
+    date = models.DateField(("Date"), default=date.today)
 
     name= models.ForeignKey(BusOrganisation, on_delete=models.CASCADE, null= True)
 
@@ -135,9 +138,9 @@ class Schedule(models.Model):
         ordering = ['price']
 
     @classmethod
-    def get_schedules(cls):
+    def get_schedules(cls,name):
         
-        schedule = cls.objects.all()
+        schedule = cls.objects.all.filter(name=name)
 
         return schedule
 

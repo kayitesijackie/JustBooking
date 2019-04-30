@@ -23,13 +23,14 @@
             {% bootstrap_form form%}
 
             <div class="form-group">
+                <a href="{% url 'home' %}">
               <input type="submit" class="btn btn-primary btn-sm" value="Login">
             </div>
 
             <input type="hidden" name="next" value="{{next}}">
 
           </form>
-          <a href="{% url 'registration_register' %}">Register</a>
+          
 
         </div>
 

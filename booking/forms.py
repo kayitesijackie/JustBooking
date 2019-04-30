@@ -2,6 +2,8 @@ from django import forms
 # from django.contrib.auth.forms import AuthenticationForm
 from .models import *
 # import phonenumbers
+import datetime as dt
+HOUR_CHOICES = [(dt.time(hour=x), '{:02d}:00'.format(x)) for x in range(0, 24)]
 
 class TicketForm(forms.ModelForm):
   '''
@@ -62,11 +64,19 @@ class TicketForm(forms.ModelForm):
         raise forms.ValidationError('The phone number is not a valid Rwandan phone number')
 
     return cleaned_data
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+
         
 class ScheduleForm(forms.ModelForm):
   class Meta:
     model = Schedule
 
-    fields = ('name','departure_location','destination_location', 'price', 'departure_time')
-
+    fields = ('name','departure_location','destination_location', 'price', 'date','departure_time')
+    widgets = {
+            'date': DateInput(), 'departure_time' : forms.Select(choices=HOUR_CHOICES)
+        }
   
